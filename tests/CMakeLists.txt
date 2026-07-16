@@ -5,3 +5,7 @@ target_link_libraries(test_defparser PRIVATE mcgen_core)
 add_executable(test_kinematics test_kinematics.cpp)
 target_link_libraries(test_kinematics PRIVATE mcgen_core)
 add_test(NAME kinematics COMMAND test_kinematics)
+
+add_executable(test_rescatter test_rescatter.cpp)
+target_link_libraries(test_rescatter PRIVATE mcgen_rescatter)
+add_test(NAME rescatter COMMAND test_rescatter)

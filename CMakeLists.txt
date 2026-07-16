@@ -29,6 +29,7 @@ if(MCGEN_WITH_ROOT)
 endif()
 
 add_subdirectory(src/app)
+add_subdirectory(src/rescatter)
 
 enable_testing()
 add_subdirectory(tests)
