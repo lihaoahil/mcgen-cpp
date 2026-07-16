@@ -1,0 +1,6 @@
+add_executable(mc_gen main.cpp)
+target_link_libraries(mc_gen PRIVATE mcgen_core)
+if(MCGEN_WITH_ROOT)
+  target_link_libraries(mc_gen PRIVATE mcgen_analysis)
+  target_compile_definitions(mc_gen PRIVATE MCGEN_WITH_ROOT)
+endif()
