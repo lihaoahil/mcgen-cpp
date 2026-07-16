@@ -7,14 +7,20 @@
 namespace mcgen::rescatter {
 namespace {
 
-Particle makeFinal(const FourVec& p, int lund, const Vec3& r) {
+// 1-based indexing, matching Generator's own convention (generator.cpp:539,
+// 548-549): the pseudo-particle occupies slot 1, so its direct children
+// carry iparent=1, not 0. GEN2HDDM_new indexes parent-1 into its particle
+// table, so an iparent of 0 underflows -- confirmed by an out_of_range
+// crash when this was first tried with iparent=0.
+Particle makeFinal(const FourVec& p, int lund, const Vec3& r, int index) {
     Particle q;
     q.p = p;
     q.lund = lund;
     q.rCreate = r;
     q.pDecay = p;   // no generator-level in-flight decay applied (v1)
     q.rDecay = r;
-    q.iparent = 0;  // direct child of the pseudo-particle placeholder
+    q.index = index;
+    q.iparent = 1;  // direct child of the pseudo-particle at slot 1
     return q;
 }
 
@@ -36,12 +42,15 @@ bool generateRescatterEvent(Rng& rng, const TargetGeom& geom, double beamLo,
     outEvent.clear();
     outEvent.push_back(Particle{});
     outEvent[0].lund = 999;
-    outEvent.push_back(makeFinal(v1.proton, kLundProton, r0));
-    outEvent.push_back(makeFinal(v1.lambda, kLundLambda, r0));
-    outEvent.push_back(makeFinal(v2.kaonPlus, kLundKaonPlus, r0));
-    outEvent.push_back(makeFinal(v2.piPlus, kLundPiPlus, r0));
-    outEvent.push_back(makeFinal(v2.piMinus, kLundPiMinus, r0));
-    outEvent.push_back(makeFinal(v2.pi0, kLundPi0, r0));
+    outEvent[0].index = 1;
+    outEvent[0].rCreate = r0;
+    outEvent[0].rDecay = r0;
+    outEvent.push_back(makeFinal(v1.proton, kLundProton, r0, 2));
+    outEvent.push_back(makeFinal(v1.lambda, kLundLambda, r0, 3));
+    outEvent.push_back(makeFinal(v2.kaonPlus, kLundKaonPlus, r0, 4));
+    outEvent.push_back(makeFinal(v2.piPlus, kLundPiPlus, r0, 5));
+    outEvent.push_back(makeFinal(v2.piMinus, kLundPiMinus, r0, 6));
+    outEvent.push_back(makeFinal(v2.pi0, kLundPi0, r0, 7));
 
     outTruth.lambdabar = v1.lambdabar;
     outTruth.vertex1 = r0;
