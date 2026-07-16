@@ -13,6 +13,7 @@
 #include "core/dynamics.h"
 #include "core/fourvector.h"
 #include "core/lineshape.h"
+#include "core/particleid.h"
 #include "core/rng.h"
 #include "core/targetgeom.h"
 
@@ -68,7 +69,6 @@ class Generator {
     void writeOutput(Event& ev);
     void openNextOutputFile();
     void printEvent(const Event& ev) const;
-    static int lundToGeant(int lund);
 
     int tableIndexFor(int lund) const;  // -1 if absent; 1-based Fortran index
 
